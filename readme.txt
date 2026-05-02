@@ -1,4 +1,4 @@
-Grupo AZ
+GRUPO
 
 - Silvia Alejandra Acuña
 - Jorge Luis De Gaetano
