@@ -1,6 +1,6 @@
 process.loadEnvFile(); // Cargar las variables del archivo .env
 
-import  express  from "express";
+import express from "express";
 import { pool } from "./db/conexion.js";
 
 const app = express();
@@ -8,68 +8,80 @@ const app = express();
 // Middleware
 app.use(express.json()); // Sirve para parsear lo que recibo
 
-// Rutas de especialidades
+// --- RUTAS DE ESPECIALIDADES ---
 
-app.get('/especialidades', async (req, res) => { // Retorna todas las especialidades activas
-    
+app.get('/especialidades', async (req, res, next) => { 
     try {
         const sql = `SELECT * FROM especialidades WHERE activo = 1`;
-        
         const [especialidades] = await pool.query(sql);
 
         res.status(200).json({
             'estado': 'ok',
             'especialidades': especialidades
         });
-
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error en el servidor');
+        next(error); // Delega al middleware global
     }    
 });
 
-
-app.get('/especialidades/:id', async (req, res) => { // Retorna UNA especialidad por ID
+app.get('/especialidades/:id', async (req, res, next) => {
     try {
-
-        const id = req.params.id; 
+        const id = req.params.id;
         const sql = `SELECT * FROM especialidades WHERE activo = 1 AND id_especialidad = ?`;
-
-        const [especialidad] = await pool.execute(sql, [id]); // Uso execute en lugar de query por el parámetro externo
+        const [especialidad] = await pool.execute(sql, [id]);
 
         if (especialidad.length === 0) {
-            return res.status(404).json({ 'estado': 'error', 'mensaje': 'Especialidad no encontrada' });
+            const err = new Error('Especialidad no encontrada');
+            err.status = 404;
+            throw err;
         }
 
         res.status(200).json({ 'estado': 'ok', 'especialidad': especialidad[0] });
-
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error en el servidor');
+        next(error);
     }
 });
 
-app.post('/especialidades', async (req, res) => { // Crear una nueva especialidad
+// Ruta post con TRANSACCIÓN
+app.post('/especialidades', async (req, res, next) => {
+    // Pedimos una conexión exclusiva para la transacción
+    const connection = await pool.getConnection(); 
+    
     try {
-        const { nombre } = req.body; // Extraemos el nombre del JSON recibido
+        const { nombre } = req.body;
+        
+        if (!nombre) {
+            const err = new Error('El nombre de la especialidad es requerido');
+            err.status = 400;
+            throw err;
+        }
+
+        // Aca empieza la transacción
+        await connection.beginTransaction();
 
         const sql = `INSERT INTO especialidades (nombre) VALUES (?)`;
-        const [resultado] = await pool.execute(sql, [nombre]);
+        const [resultado] = await connection.execute(sql, [nombre]);
+
+        // Si fue exitosa, confirmamos los cambios
+        await connection.commit();
 
         res.status(201).json({ 
             'estado': 'ok', 
-            'mensaje': 'Especialidad creada', 
+            'mensaje': 'Especialidad creada con éxito', 
             'id': resultado.insertId 
         });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error en el servidor');
+        // Si falla, rollback de cualquier cambio pendiente
+        await connection.rollback();
+        next(error); 
+    } finally {
+        // Liberamos la conexión
+        connection.release();
     }
 });
 
-
-app.put('/especialidades/:id', async (req, res) => { // Actualizar una especialidad
+app.put('/especialidades/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const { nombre } = req.body;
@@ -78,36 +90,51 @@ app.put('/especialidades/:id', async (req, res) => { // Actualizar una especiali
         const [resultado] = await pool.execute(sql, [nombre, id]);
 
         if (resultado.affectedRows === 0) {
-            return res.status(404).json({ 'estado': 'error', 'mensaje': 'No se encontró la especialidad a editar' });
+            const err = new Error('No se encontró la especialidad a editar');
+            err.status = 404;
+            throw err;
         }
 
         res.status(200).json({ 'estado': 'ok', 'mensaje': 'Especialidad actualizada' });
-
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ 'estado': 'error', 'mensaje': 'Error al actualizar' });
+        next(error);
     }
 });
 
-app.delete('/especialidades/:id', async (req, res) => { // DELETE - Eliminación lógica
+app.delete('/especialidades/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const sql = `UPDATE especialidades SET activo = 0 WHERE id_especialidad = ?`;
         
-        await pool.execute(sql, [id]);
+        const [resultado] = await pool.execute(sql, [id]);
         
+        if (resultado.affectedRows === 0) {
+            const err = new Error('No se encontró la especialidad para eliminar');
+            err.status = 404;
+            throw err;
+        }
+
         res.status(200).json({ 'estado': 'ok', 'mensaje': 'Especialidad dada de baja' });
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error al eliminar');
+        next(error);
     }
 });
 
+// Manejo de Errores (Middleware Centralizado)
+app.use((err, req, res, next) => {
+    console.error("Error capturado:", err.message);
 
+    const statusCode = err.status || 500;
+    const mensaje = err.message || 'Error interno del servidor';
 
-const PUERTO = process.env.PUERTO;
+    res.status(statusCode).json({
+        estado: 'error',
+        codigo: statusCode,
+        mensaje: mensaje
+    });
+});
 
-// Puerto del server
-app.listen(PUERTO || 3000,() => {
+const PUERTO = process.env.PUERTO || 3000;
+app.listen(PUERTO, () => {
     console.log(`Servidor iniciado en puerto ${PUERTO}`);
 });
