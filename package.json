@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"node --watch index.js"
+    "dev": "node --watch index.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,12 @@
   },
   "homepage": "https://github.com/jdegaetanodev/api_node#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
     "mysql2": "^3.22.3"
   }
 }
