@@ -1,17 +1,16 @@
 import { Router } from 'express';
-import { body, param } from 'express-validator';
 import { validar } from '../middlewares/validar.middleware.js';
+import { validarId, validarCrear, validarActualizar } from '../dtos/especialidades.dto.js';
+import TransformarDTO from '../middlewares/transformarDTOs.js';
 import * as especialidadesControlador from '../controladores/especialidades.controlador.js';
 
-const router = Router();
+const enrutador = Router();
+const transformar = new TransformarDTO();
 
-const validarId     = param('id').isInt({ min: 1 }).withMessage('ID inválido');
-const validarNombre = body('nombre').notEmpty().withMessage('El nombre es requerido').trim();
+enrutador.get('/',       especialidadesControlador.obtenerTodos);
+enrutador.get('/:id',    validarId, validar, especialidadesControlador.obtenerUno);
+enrutador.post('/',      validarCrear, validar, transformar.especialidadesCrearDTO, especialidadesControlador.crear);
+enrutador.put('/:id',    validarActualizar, validar, transformar.especialidadesActualizarDTO, especialidadesControlador.actualizar);
+enrutador.delete('/:id', validarId, validar, especialidadesControlador.eliminar);
 
-router.get('/',       especialidadesControlador.obtenerTodos);
-router.get('/:id',    [validarId], validar, especialidadesControlador.obtenerUno);
-router.post('/',      [validarNombre], validar, especialidadesControlador.crear);
-router.put('/:id',    [validarId, validarNombre], validar, especialidadesControlador.actualizar);
-router.delete('/:id', [validarId], validar, especialidadesControlador.eliminar);
-
-export default router;
+export default enrutador;
