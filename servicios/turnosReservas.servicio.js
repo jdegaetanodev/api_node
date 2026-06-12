@@ -57,7 +57,7 @@ export const crearConTransaccion = async ({
     }
 
     const [resultado] = await conexion.execute(
-      `INSERT INTO turnos_reservas (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, atentido, activo) 
+      `INSERT INTO turnos_reservas (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, tatendido, activo) 
        VALUES (?, ?, ?, ?, ?, ?, 1)`,
       [
         id_medico,
