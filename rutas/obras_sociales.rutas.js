@@ -1,16 +1,41 @@
-import { Router } from 'express';
-import { validar } from '../middlewares/validar.middleware.js';
-import { validarId, validarCrear, validarActualizar } from '../dtos/obras_sociales.dto.js';
-import TransformarDTO from '../middlewares/transformarDTOs.js';
-import * as obrasSocialesControlador from '../controladores/obras_sociales.controlador.js';
+import { Router } from "express";
+import { validar } from "../middlewares/validar.middleware.js";
+import {
+  validarId,
+  validarCrear,
+  validarActualizar,
+} from "../dtos/medicosObrasSociales.dto.js";
+import TransformarDTO from "../middlewares/transformarDTOs.js";
+import * as mosControlador from "../controladores/medicosObrasSociales.controlador.js";
+
+// IMPORTAMOS LOS MIDDLEWARES DE AUTENTICACIÓN
+import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
 
-enrutador.get('/',       obrasSocialesControlador.obtenerTodos);
-enrutador.get('/:id',    validarId, validar, obrasSocialesControlador.obtenerUno);
-enrutador.post('/',      validarCrear, validar, transformar.obrasSocialesCrearDTO, obrasSocialesControlador.crear);
-enrutador.put('/:id',    validarActualizar, validar, transformar.obrasSocialesActualizarDTO, obrasSocialesControlador.actualizar);
-enrutador.delete('/:id', validarId, validar, obrasSocialesControlador.eliminar);
+enrutador.get("/", mosControlador.obtenerTodos);
+enrutador.get("/:id", validarId, validar, mosControlador.obtenerUno);
+
+// Rutas de escritura protegidas para el Administrador
+enrutador.post(
+  "/",
+  verificarToken,
+  esAdmin,
+  validarCrear,
+  validar,
+  transformar.medicosObrasSocialesCrearDTO,
+  mosControlador.crear,
+);
+enrutador.put(
+  "/:id",
+  verificarToken,
+  esAdmin,
+  validarActualizar,
+  validar,
+  transformar.medicosObrasSocialesActualizarDTO,
+  mosControlador.actualizar,
+);
+enrutador.delete("/:id", verificarToken, esAdmin, validarId, validar, mosControlador.eliminar);
 
 export default enrutador;
