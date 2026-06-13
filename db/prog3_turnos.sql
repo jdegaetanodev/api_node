@@ -151,7 +151,7 @@ CREATE TABLE `turnos_reservas` (
   `id_obra_social` int(10) UNSIGNED NOT NULL,
   `fecha_hora` datetime NOT NULL,
   `valor_total` decimal(10,2) NOT NULL,
-  `atentido` tinyint(3) UNSIGNED NOT NULL,
+  `atendido` tinyint(3) UNSIGNED NOT NULL,
   `activo` tinyint(3) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -159,7 +159,7 @@ CREATE TABLE `turnos_reservas` (
 -- Volcado de datos para la tabla `turnos_reservas`
 --
 
-INSERT INTO `turnos_reservas` (`id_turno_reserva`, `id_medico`, `id_paciente`, `id_obra_social`, `fecha_hora`, `valor_total`, `atentido`, `activo`) VALUES
+INSERT INTO `turnos_reservas` (`id_turno_reserva`, `id_medico`, `id_paciente`, `id_obra_social`, `fecha_hora`, `valor_total`, `atendido`, `activo`) VALUES
 (1, 1, 1, 1, '2026-04-01 17:00:00', 4500.00, 0, 1),
 (2, 3, 2, 2, '2026-04-01 18:00:00', 9000.00, 0, 1),
 (4, 4, 3, 3, '2026-04-01 19:00:00', 13500.00, 0, 1),
@@ -401,7 +401,7 @@ BEGIN
         os.nombre AS obra_social,
         COUNT(tr.id_turno_reserva) AS cantidad_turnos,
         COUNT(DISTINCT tr.id_paciente) AS cantidad_pacientes,
-        SUM(CASE WHEN tr.atentido = 1 THEN 1 ELSE 0 END) AS turnos_atendidos,
+        SUM(CASE WHEN tr.atendido = 1 THEN 1 ELSE 0 END) AS turnos_atendidos,
         SUM(tr.valor_total) AS recaudacion_total
     FROM obras_sociales os
     LEFT JOIN turnos_reservas tr ON os.id_obra_social = tr.id_obra_social AND tr.activo = 1

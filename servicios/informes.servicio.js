@@ -3,7 +3,7 @@ import { pool } from '../db/conexion.js';
 // 1. Obtener la información de los turnos activos para el listado del PDF
 export const obtenerDetalleTurnosPDF = async () => {
   const [filas] = await pool.query(`
-    SELECT tr.id_turno_reserva, tr.fecha_hora, tr.valor_total, tr.atentido,
+    SELECT tr.id_turno_reserva, tr.fecha_hora, tr.valor_total, tr.atendido,
            u_med.apellido AS medico_apellido, os.nombre AS obra_social,
            u_pac.apellido AS paciente_apellido, u_pac.documento AS paciente_doc
     FROM turnos_reservas tr
