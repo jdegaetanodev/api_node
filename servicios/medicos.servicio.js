@@ -34,3 +34,10 @@ export const eliminar = async (id) =>
     "UPDATE usuarios u JOIN medicos m ON u.id_usuario = m.id_usuario SET u.activo = 0 WHERE m.id_medico = ? AND u.activo = 1",
     [id],
   );
+
+export const obtenerPorEspecialidad = async (id_especialidad) =>
+  pool.execute(`
+    SELECT v.* FROM v_medicos v
+    JOIN medicos m ON v.id_medico = m.id_medico
+    WHERE m.id_especialidad = ?
+  `, [id_especialidad]);

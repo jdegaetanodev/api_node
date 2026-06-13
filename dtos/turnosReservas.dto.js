@@ -24,9 +24,7 @@ export const validarCrear = [
     .notEmpty()
     .withMessage("La fecha y hora son requeridas")
     .isISO8601()
-    .withMessage(
-      "Debe ser una fecha y hora válida (Formato ISO8601 o YYYY-MM-DD HH:MM:SS)",
-    ),
+    .withMessage("Debe ser una fecha y hora válida (Formato ISO8601 o YYYY-MM-DD HH:MM:SS)"),
   body("atendido")
     .optional()
     .isInt({ min: 0, max: 1 })
@@ -40,4 +38,16 @@ export const validarActualizar = [
   body("id_obra_social").optional().isInt({ min: 1 }),
   body("fecha_hora").optional().isISO8601(),
   body("atendido").optional().isInt({ min: 0, max: 1 }),
+];
+
+export const validarCrearReservaPropia = [
+  body("id_medico")
+    .notEmpty().withMessage("El id_medico es requerido")
+    .isInt({ min: 1 }).withMessage("Debe ser un ID de médico válido"),
+  body("fecha_hora")
+    .notEmpty().withMessage("La fecha y hora son requeridas")
+    .isISO8601().withMessage("Debe ser una fecha y hora válida"),
+  body("atendido")
+    .optional()
+    .isInt({ min: 0, max: 1 }).withMessage("El campo atendido debe ser 0 o 1"),
 ];
