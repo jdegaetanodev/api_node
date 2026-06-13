@@ -8,11 +8,11 @@ export const verificarToken = (req, res, next) => {
  
 
   if (!token) {
-    return res.status(403).json({ estado: false, mensaje: 'Se requiere un token de autenticación.' });
+    return res.status(403).json({ estado: false, mensaje: 'Se requiere un token de autenticación.' }); 
   }
 
   try {
-    const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET || 'mi_secreto_super_seguro');
+    const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
     req.usuario = decoded;
     next();
   } catch (error) {

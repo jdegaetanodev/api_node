@@ -7,6 +7,7 @@ import {
 } from "../dtos/usuarios.dto.js";
 import TransformarDTO from "../middlewares/transformarDTOs.js";
 import * as usuariosControlador from "../controladores/usuarios.controlador.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
@@ -15,6 +16,7 @@ enrutador.get("/", usuariosControlador.obtenerTodos);
 enrutador.get("/:id", validarId, validar, usuariosControlador.obtenerUno);
 enrutador.post(
   "/",
+  upload.single('foto'),
   validarCrear,
   validar,
   transformar.usuariosCrearDTO,
@@ -22,6 +24,7 @@ enrutador.post(
 );
 enrutador.put(
   "/:id",
+  upload.single('foto'),
   validarActualizar,
   validar,
   transformar.usuariosActualizarDTO,

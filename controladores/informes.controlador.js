@@ -43,7 +43,7 @@ export const descargarReportePDF = async (req, res) => {
 
     turnos.forEach((turno, index) => {
       const fecha = new Date(turno.fecha_hora).toLocaleString('es-AR');
-      const estado = turno.atentido === 1 ? 'Atendido' : 'Pendiente';
+      const estado = turno.atendido === 1 ? 'Atendido' : 'Pendiente';
 
       // Bloque principal del turno
       doc.fontSize(10).fillColor('#2d3748').text(

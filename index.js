@@ -2,6 +2,8 @@ process.loadEnvFile();
 
 import express from 'express';
 import cors from 'cors'; // Es buena práctica invocarlo ya que está en las dependencias
+import morgan from 'morgan';
+
 import especialidadesRutas from './rutas/especialidades.rutas.js';
 import obrasSocialesRutas from './rutas/obras_sociales.rutas.js';
 import usuariosRutas from './rutas/usuarios.rutas.js';
@@ -16,6 +18,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 
 // Declaración de Endpoints Globales
 app.use('/auth', authRutas);
