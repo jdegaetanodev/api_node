@@ -39,7 +39,7 @@ export const obtenerPorPaciente = async (id_usuario) =>
 
 export const marcarAtendido = async (id) =>
   pool.execute(
-    "UPDATE turnos_reservas SET atentido = 1 WHERE id_turno_reserva = ? AND activo = 1",
+    "UPDATE turnos_reservas SET atendido = 1 WHERE id_turno_reserva = ? AND activo = 1",
     [id]
   );
 
@@ -76,7 +76,7 @@ export const crearConTransaccion = async ({
     }
 
     const [resultado] = await conexion.execute(
-      `INSERT INTO turnos_reservas (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, atentido, activo)
+      `INSERT INTO turnos_reservas (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, atendido, activo)
        VALUES (?, ?, ?, ?, ?, ?, 1)`,
       [id_medico, id_paciente, id_obra_social, fecha_hora, valorTotal, atendido]
     );
