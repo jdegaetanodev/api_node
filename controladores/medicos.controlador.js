@@ -113,3 +113,13 @@ export const eliminar = async (req, res) => {
     res.status(500).json({ estado: false, mensaje: "Error interno" });
   }
 };
+
+export const obtenerPorEspecialidad = async (req, res) => {
+  try {
+    const [medicos] = await medicosServicio.obtenerPorEspecialidad(req.params.id);
+    res.status(200).json({ estado: true, mensaje: 'Médicos encontrados.', medicos });
+  } catch (error) {
+    console.log(`Error en GET /medicos/especialidad/:id ${error}`);
+    res.status(500).json({ estado: false, mensaje: 'Error interno' });
+  }
+};
