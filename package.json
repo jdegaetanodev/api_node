@@ -28,6 +28,8 @@
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
     "mysql2": "^3.22.3",
-    "pdfkit": "^0.19.1"
+    "pdfkit": "^0.19.1",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }

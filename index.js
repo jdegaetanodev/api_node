@@ -3,6 +3,8 @@ process.loadEnvFile();
 import express from 'express';
 import cors from 'cors'; // Es buena práctica invocarlo ya que está en las dependencias
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './swagger.js';
 
 import especialidadesRutas from './rutas/especialidades.rutas.js';
 import obrasSocialesRutas from './rutas/obras_sociales.rutas.js';
@@ -21,6 +23,9 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 
+// Documentación Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Declaración de Endpoints Globales
 app.use('/auth', authRutas);
 app.use('/especialidades', especialidadesRutas);
@@ -36,4 +41,5 @@ const PUERTO = process.env.PUERTO || 3000;
 
 app.listen(PUERTO, () => {
   console.log(`Servidor iniciado en puerto ${PUERTO}`);
+  console.log(`Documentación disponible en http://localhost:${PUERTO}/api-docs`);
 });
