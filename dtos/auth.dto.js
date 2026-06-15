@@ -1,5 +1,13 @@
 import { body } from 'express-validator';
 
+export const validarLogin = [
+  body('email')
+    .notEmpty().withMessage('El email es requerido')
+    .isEmail().withMessage('Debe ser un email válido'),
+  body('contrasenia')
+    .notEmpty().withMessage('La contraseña es requerida')
+];
+
 export const validarSolicitudReset = [
   body('email')
     .notEmpty().withMessage('El email es requerido')
