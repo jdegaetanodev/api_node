@@ -7,6 +7,7 @@ import {
 } from "../dtos/medicosObrasSociales.dto.js";
 import TransformarDTO from "../middlewares/transformarDTOs.js";
 import * as mosControlador from "../controladores/medicosObrasSociales.controlador.js";
+import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
@@ -61,6 +62,8 @@ enrutador.get("/:id", validarId, validar, mosControlador.obtenerUno);
  *   post:
  *     summary: Asocia un médico con una obra social
  *     tags: [MedicosObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -82,11 +85,15 @@ enrutador.get("/:id", validarId, validar, mosControlador.obtenerUno);
  *         description: Asociación creada correctamente
  *       400:
  *         description: Datos duplicados o referencias inexistentes
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       422:
  *         description: Error de validación
  */
 enrutador.post(
   "/",
+  verificarToken,
+  esAdmin,
   validarCrear,
   validar,
   transformar.medicosObrasSocialesCrearDTO,
@@ -99,6 +106,8 @@ enrutador.post(
  *   put:
  *     summary: Actualiza una asociación médico-obra social
  *     tags: [MedicosObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -120,6 +129,8 @@ enrutador.post(
  *     responses:
  *       200:
  *         description: Asociación actualizada correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Asociación no encontrada
  *       422:
@@ -127,6 +138,8 @@ enrutador.post(
  */
 enrutador.put(
   "/:id",
+  verificarToken,
+  esAdmin,
   validarActualizar,
   validar,
   transformar.medicosObrasSocialesActualizarDTO,
@@ -139,6 +152,8 @@ enrutador.put(
  *   delete:
  *     summary: Da de baja una asociación médico-obra social (soft delete)
  *     tags: [MedicosObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -149,11 +164,13 @@ enrutador.put(
  *     responses:
  *       200:
  *         description: Asociación dada de baja correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Asociación no encontrada
  *       422:
  *         description: ID inválido
  */
-enrutador.delete("/:id", validarId, validar, mosControlador.eliminar);
+enrutador.delete("/:id", verificarToken, esAdmin, validarId, validar, mosControlador.eliminar);
 
 export default enrutador;
