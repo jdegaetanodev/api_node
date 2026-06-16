@@ -21,7 +21,10 @@ export const login = async (req, res) => {
     const usuario = usuarios[0];
 
     // Comparación temporal en texto plano según tus datos actuales
-    const passwordValido = (contrasenia === usuario.contrasenia); 
+    const [hashRows] = await pool.execute(
+  'SELECT SHA2(?, 256) AS hash', [contrasenia]
+);
+const passwordValido = hashRows[0].hash === usuario.contrasenia;
 
     if (!passwordValido) {
       return res.status(401).json({ estado: false, mensaje: 'Credenciales inválidas.' });

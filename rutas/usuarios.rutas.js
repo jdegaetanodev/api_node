@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";import { Router } from "express";
 import { validar } from "../middlewares/validar.middleware.js";
 import {
   validarId,
@@ -108,6 +108,8 @@ enrutador.get("/:id", validarId, validar, usuariosControlador.obtenerUno);
  */
 enrutador.post(
   "/",
+  verificarToken,
+  esAdmin,
   upload.single('foto'),
   validarCrear,
   validar,
