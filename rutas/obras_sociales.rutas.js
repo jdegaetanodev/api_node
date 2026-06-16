@@ -154,5 +154,33 @@ enrutador.put(
   validar,
   transformar.obrasSocialesActualizarDTO,
   obrasSocialesControlador.actualizar,
-)
+);
+
+/**
+ * @swagger
+ * /obras-sociales/{id}:
+ *   delete:
+ *     summary: Da de baja una obra social (soft delete)
+ *     tags: [ObrasSociales]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la obra social
+ *     responses:
+ *       200:
+ *         description: Obra social dada de baja correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
+ *       404:
+ *         description: Obra social no encontrada
+ *       422:
+ *         description: ID inválido
+ */
+enrutador.delete("/:id", verificarToken, esAdmin, validarId, validar, obrasSocialesControlador.eliminar);
+
 export default enrutador;
