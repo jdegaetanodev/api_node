@@ -21,13 +21,15 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todos los médicos
  *     tags: [Medicos]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de médicos obtenida correctamente
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", medicosControlador.obtenerTodos);
+enrutador.get("/", verificarToken, medicosControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -35,6 +37,8 @@ enrutador.get("/", medicosControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene los médicos de una especialidad
  *     tags: [Medicos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -48,7 +52,7 @@ enrutador.get("/", medicosControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/especialidad/:id", validarId, validar, medicosControlador.obtenerPorEspecialidad);
+enrutador.get("/especialidad/:id", verificarToken, validarId, validar, medicosControlador.obtenerPorEspecialidad);
 
 /**
  * @swagger
@@ -56,6 +60,8 @@ enrutador.get("/especialidad/:id", validarId, validar, medicosControlador.obtene
  *   get:
  *     summary: Obtiene un médico por ID
  *     tags: [Medicos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -71,7 +77,7 @@ enrutador.get("/especialidad/:id", validarId, validar, medicosControlador.obtene
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", validarId, validar, medicosControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, validarId, validar, medicosControlador.obtenerUno);
 
 /**
  * @swagger

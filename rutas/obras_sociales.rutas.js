@@ -25,13 +25,15 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todas las obras sociales activas
  *     tags: [ObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de obras sociales obtenida correctamente
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", obrasSocialesControlador.obtenerTodos);
+enrutador.get("/", verificarToken, obrasSocialesControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -39,6 +41,8 @@ enrutador.get("/", obrasSocialesControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene una obra social por ID
  *     tags: [ObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,7 +58,7 @@ enrutador.get("/", obrasSocialesControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", validarId, validar, obrasSocialesControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, validarId, validar, obrasSocialesControlador.obtenerUno);
 
 /**
  * @swagger

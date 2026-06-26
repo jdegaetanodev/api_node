@@ -21,13 +21,15 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todas las especialidades activas
  *     tags: [Especialidades]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de especialidades obtenida correctamente
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get('/',       especialidadesControlador.obtenerTodos);
+enrutador.get('/',       verificarToken, especialidadesControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -35,6 +37,8 @@ enrutador.get('/',       especialidadesControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene una especialidad por ID
  *     tags: [Especialidades]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -50,7 +54,7 @@ enrutador.get('/',       especialidadesControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get('/:id',    validarId, validar, especialidadesControlador.obtenerUno);
+enrutador.get('/:id',    verificarToken, validarId, validar, especialidadesControlador.obtenerUno);
 
 /**
  * @swagger

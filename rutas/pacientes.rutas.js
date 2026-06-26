@@ -25,13 +25,15 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todos los pacientes
  *     tags: [Pacientes]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de pacientes obtenida correctamente
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", pacientesControlador.obtenerTodos);
+enrutador.get("/", verificarToken, esAdmin, pacientesControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -39,6 +41,8 @@ enrutador.get("/", pacientesControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene un paciente por ID
  *     tags: [Pacientes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,7 +58,7 @@ enrutador.get("/", pacientesControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", validarId, validar, pacientesControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, esAdmin, validarId, validar, pacientesControlador.obtenerUno);
 
 /**
  * @swagger
