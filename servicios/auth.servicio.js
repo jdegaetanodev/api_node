@@ -41,3 +41,15 @@ export const resetearContraseniaConToken = async (token, nuevaContrasenia) => {
 
   return true;
 };
+
+export const buscarUsuarioPorEmail = async (email) => {
+  return pool.execute(
+    'SELECT id_usuario, email, contrasenia, rol FROM usuarios WHERE email = ? AND activo = 1',
+    [email]
+  );
+};
+
+export const obtenerHashPassword = async (contrasenia) => {
+  const [hashRows] = await pool.execute('SELECT SHA2(?, 256) AS hash', [contrasenia]);
+  return hashRows[0].hash;
+};

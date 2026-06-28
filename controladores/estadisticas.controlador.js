@@ -1,14 +1,13 @@
-import { pool } from '../db/conexion.js';
+import * as estadisticasServicio from '../servicios/estadisticas.servicio.js';
 
 export const obtenerEstadisticas = async (req, res) => {
   try {
-   
-    const [resultados] = await pool.query('CALL sp_obtener_estadisticas_turnos()');
+    const estadisticas = await estadisticasServicio.obtenerMetricasSP();
     
     res.status(200).json({
       estado: true,
       mensaje: "Estadísticas de turnos generadas con éxito.",
-      estadisticas: resultados[0]
+      estadisticas
     });
   } catch (error) {
     console.log(`Error en GET /estadisticas ${error}`);

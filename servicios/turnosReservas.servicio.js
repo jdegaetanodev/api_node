@@ -105,3 +105,10 @@ export const eliminar = async (id) =>
     "UPDATE turnos_reservas SET activo = 0 WHERE id_turno_reserva = ? AND activo = 1",
     [id]
   );
+
+export const obtenerDatosPacientePorUsuario = async (id_usuario) => {
+  return pool.execute(
+    "SELECT id_paciente, id_obra_social FROM pacientes p JOIN usuarios u ON p.id_usuario = u.id_usuario WHERE u.id_usuario = ? AND u.activo = 1",
+    [id_usuario]
+  );
+};

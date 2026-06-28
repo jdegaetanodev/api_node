@@ -1,4 +1,3 @@
-import { pool } from "../db/conexion.js";
 import * as turnosServicio from "../servicios/turnosReservas.servicio.js";
 
 export const obtenerTodos = async (req, res) => {
@@ -57,10 +56,8 @@ export const marcarAtendido = async (req, res) => {
 
 export const crearReservaPropia = async (req, res) => {
   try {
-    const [paciente] = await pool.execute(
-      "SELECT id_paciente, id_obra_social FROM pacientes p JOIN usuarios u ON p.id_usuario = u.id_usuario WHERE u.id_usuario = ? AND u.activo = 1",
-      [req.usuario.id_usuario]
-    );
+    const [paciente] = await turnosServicio.obtenerDatosPacientePorUsuario(req.usuario.id_usuario);
+    
     if (!paciente.length)
       return res.status(404).json({ estado: false, mensaje: "Paciente no encontrado." });
 
@@ -105,7 +102,7 @@ export const actualizar = async (req, res) => {
     const [resultado] = await turnosServicio.actualizar(req.dto, req.params.id);
     if (!resultado.affectedRows)
       return res.status(404).json({ estado: false, mensaje: "Turno no encontrado" });
-    res.status(200).json({ estado: true, mensaje: "Turno modificado correctamente." });
+    res.status(200).json({ estado: true, mensaje: "Turno modified correctamente." });
   } catch (error) {
     console.log(`Error en PUT /turnos-reservas/:id ${error}`);
     res.status(500).json({ estado: false, mensaje: "Error interno" });
