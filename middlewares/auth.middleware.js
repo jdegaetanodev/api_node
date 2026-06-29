@@ -40,3 +40,9 @@ export const esPaciente = (req, res, next) => {
   }
   next();
 };
+export const esPacienteOAdmin = (req, res, next) => {
+  if (req.usuario.rol !== 2 && req.usuario.rol !== 3) {
+    return res.status(403).json({ estado: false, mensaje: 'Acceso denegado. Se requieren permisos de paciente o administrador.' });
+  }
+  next();
+};
