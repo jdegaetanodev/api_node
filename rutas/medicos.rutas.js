@@ -3,7 +3,7 @@ import { validar } from "../middlewares/validar.middleware.js";
 import { validarId, validarCrear, validarActualizar } from "../dtos/medicos.dto.js";
 import TransformarDTO from "../middlewares/transformarDTOs.js";
 import * as medicosControlador from "../controladores/medicos.controlador.js";
-import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";
+import { verificarToken, esAdmin, esPacienteOAdmin } from "../middlewares/auth.middleware.js";
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
@@ -29,7 +29,7 @@ const transformar = new TransformarDTO();
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", verificarToken, medicosControlador.obtenerTodos);
+enrutador.get("/", verificarToken, esPacienteOAdmin, medicosControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ enrutador.get("/", verificarToken, medicosControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/especialidad/:id", verificarToken, validarId, validar, medicosControlador.obtenerPorEspecialidad);
+enrutador.get("/especialidad/:id", verificarToken, esPacienteOAdmin, validarId, validar, medicosControlador.obtenerPorEspecialidad);
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ enrutador.get("/especialidad/:id", verificarToken, validarId, validar, medicosCo
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", verificarToken, validarId, validar, medicosControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, esPacienteOAdmin, validarId, validar, medicosControlador.obtenerUno);
 
 /**
  * @swagger
