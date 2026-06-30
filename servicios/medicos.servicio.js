@@ -1,43 +1,19 @@
-import { pool } from "../db/conexion.js";
+import * as medicosRepositorio from '../repositorios/medicos.repositorio.js';
 
-export const obtenerTodos = async () => pool.query("SELECT * FROM v_medicos");
+export const obtenerTodos = async () =>
+  medicosRepositorio.encontrarTodos();
 
 export const obtenerUno = async (id) =>
-  pool.execute("SELECT * FROM v_medicos WHERE id_medico = ?", [id]);
-
-export const crear = async ({
-  id_usuario,
-  id_especialidad,
-  matricula,
-  descripcion,
-  valor_consulta,
-}) =>
-  pool.execute(
-    "INSERT INTO medicos (id_usuario, id_especialidad, matricula, descripcion, valor_consulta) VALUES (?, ?, ?, ?, ?)",
-    [id_usuario, id_especialidad, matricula, descripcion, valor_consulta],
-  );
-
-export const actualizar = async (dto, id) => {
-  const campos = Object.keys(dto)
-    .map((campo) => `${campo} = ?`)
-    .join(", ");
-  const valores = [...Object.values(dto), id];
-
-  return pool.execute(
-    `UPDATE medicos SET ${campos} WHERE id_medico = ?`,
-    valores,
-  );
-};
-
-export const eliminar = async (id) =>
-  pool.execute(
-    "UPDATE usuarios u JOIN medicos m ON u.id_usuario = m.id_usuario SET u.activo = 0 WHERE m.id_medico = ? AND u.activo = 1",
-    [id],
-  );
+  medicosRepositorio.encontrarUno(id);
 
 export const obtenerPorEspecialidad = async (id_especialidad) =>
-  pool.execute(`
-    SELECT v.* FROM v_medicos v
-    JOIN medicos m ON v.id_medico = m.id_medico
-    WHERE m.id_especialidad = ?
-  `, [id_especialidad]);
+  medicosRepositorio.encontrarPorEspecialidad(id_especialidad);
+
+export const crear = async ({ id_usuario, id_especialidad, matricula, descripcion, valor_consulta }) =>
+  medicosRepositorio.insertar(id_usuario, id_especialidad, matricula, descripcion, valor_consulta);
+
+export const actualizar = async (dto, id) =>
+  medicosRepositorio.actualizar(dto, id);
+
+export const eliminar = async (id) =>
+  medicosRepositorio.eliminar(id);
