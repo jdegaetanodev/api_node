@@ -25,13 +25,17 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todas las asociaciones médico-obra social
  *     tags: [MedicosObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de asociaciones obtenida correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", mosControlador.obtenerTodos);
+enrutador.get("/", verificarToken, esAdmin, mosControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -39,6 +43,8 @@ enrutador.get("/", mosControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene una asociación médico-obra social por ID
  *     tags: [MedicosObrasSociales]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -49,12 +55,14 @@ enrutador.get("/", mosControlador.obtenerTodos);
  *     responses:
  *       200:
  *         description: Asociación encontrada
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Asociación no encontrada
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", validarId, validar, mosControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, esAdmin, validarId, validar, mosControlador.obtenerUno);
 
 /**
  * @swagger

@@ -1,4 +1,5 @@
-import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";import { Router } from "express";
+import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";
+import { Router } from "express";
 import { validar } from "../middlewares/validar.middleware.js";
 import {
   validarId,
@@ -25,13 +26,17 @@ const transformar = new TransformarDTO();
  *   get:
  *     summary: Obtiene todos los usuarios
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de usuarios obtenida correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", usuariosControlador.obtenerTodos);
+enrutador.get("/", verificarToken, esAdmin, usuariosControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -39,6 +44,8 @@ enrutador.get("/", usuariosControlador.obtenerTodos);
  *   get:
  *     summary: Obtiene un usuario por ID
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -49,12 +56,14 @@ enrutador.get("/", usuariosControlador.obtenerTodos);
  *     responses:
  *       200:
  *         description: Usuario encontrado
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Usuario no encontrado
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", validarId, validar, usuariosControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, esAdmin, validarId, validar, usuariosControlador.obtenerUno);
 
 /**
  * @swagger
@@ -62,6 +71,8 @@ enrutador.get("/:id", validarId, validar, usuariosControlador.obtenerUno);
  *   post:
  *     summary: Registra un nuevo usuario
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -103,6 +114,8 @@ enrutador.get("/:id", validarId, validar, usuariosControlador.obtenerUno);
  *         description: Usuario registrado con éxito
  *       400:
  *         description: Datos duplicados
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       422:
  *         description: Error de validación
  */
@@ -123,6 +136,8 @@ enrutador.post(
  *   put:
  *     summary: Actualiza los datos de un usuario
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -157,6 +172,8 @@ enrutador.post(
  *         description: Usuario actualizado correctamente
  *       400:
  *         description: Sin datos para actualizar o duplicados
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Usuario no encontrado
  *       422:
@@ -164,6 +181,8 @@ enrutador.post(
  */
 enrutador.put(
   "/:id",
+  verificarToken,
+  esAdmin,
   upload.single('foto'),
   validarActualizar,
   validar,
@@ -177,6 +196,8 @@ enrutador.put(
  *   delete:
  *     summary: Da de baja un usuario (soft delete)
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -187,11 +208,13 @@ enrutador.put(
  *     responses:
  *       200:
  *         description: Usuario dado de baja correctamente
+ *       403:
+ *         description: Acceso denegado, se requieren permisos de administrador
  *       404:
  *         description: Usuario no encontrado
  *       422:
  *         description: ID inválido
  */
-enrutador.delete("/:id", validarId, validar, usuariosControlador.eliminar);
+enrutador.delete("/:id", verificarToken, esAdmin, validarId, validar, usuariosControlador.eliminar);
 
 export default enrutador;

@@ -2,7 +2,7 @@ import * as estadisticasServicio from '../servicios/estadisticas.servicio.js';
 
 export const obtenerEstadisticas = async (req, res) => {
   try {
-    const estadisticas = await estadisticasServicio.obtenerMetricasSP();
+    const estadisticas = await estadisticasServicio.obtenerEstadisticas();
     
     res.status(200).json({
       estado: true,

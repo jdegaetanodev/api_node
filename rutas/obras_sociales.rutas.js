@@ -7,7 +7,7 @@ import {
 } from "../dtos/obras_sociales.dto.js";
 import TransformarDTO from "../middlewares/transformarDTOs.js";
 import * as obrasSocialesControlador from "../controladores/obras_sociales.controlador.js";
-import { verificarToken, esAdmin } from "../middlewares/auth.middleware.js";
+import { verificarToken, esAdmin, esPacienteOAdmin } from "../middlewares/auth.middleware.js";
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
@@ -33,7 +33,7 @@ const transformar = new TransformarDTO();
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get("/", verificarToken, obrasSocialesControlador.obtenerTodos);
+enrutador.get("/", verificarToken, esPacienteOAdmin, obrasSocialesControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -58,7 +58,7 @@ enrutador.get("/", verificarToken, obrasSocialesControlador.obtenerTodos);
  *       422:
  *         description: ID inválido
  */
-enrutador.get("/:id", verificarToken, validarId, validar, obrasSocialesControlador.obtenerUno);
+enrutador.get("/:id", verificarToken, esPacienteOAdmin, validarId, validar, obrasSocialesControlador.obtenerUno);
 
 /**
  * @swagger

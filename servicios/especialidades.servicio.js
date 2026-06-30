@@ -1,24 +1,16 @@
-import { pool } from '../db/conexion.js';
+import * as especialidadesRepositorio from '../repositorios/especialidades.repositorio.js';
 
 export const obtenerTodos = async () =>
-  pool.query('SELECT * FROM especialidades WHERE activo = 1');
+  especialidadesRepositorio.encontrarTodos();
 
 export const obtenerUno = async (id) =>
-  pool.execute('SELECT * FROM especialidades WHERE activo = 1 AND id_especialidad = ?', [id]);
+  especialidadesRepositorio.encontrarUno(id);
 
 export const crear = async ({ nombre }) =>
-  pool.execute('INSERT INTO especialidades (nombre) VALUES (?)', [nombre]);
+  especialidadesRepositorio.insertar(nombre);
 
 export const actualizar = async ({ nombre }, id) =>
-  pool.execute(
-    'UPDATE especialidades SET nombre = ? WHERE id_especialidad = ? AND activo = 1',
-    [nombre, id]
-  );
+  especialidadesRepositorio.actualizar(nombre, id);
 
 export const eliminar = async (id) =>
-  pool.execute(
-    'UPDATE especialidades SET activo = 0 WHERE id_especialidad = ? AND activo = 1',
-    [id]
-  );
-
-  
+  especialidadesRepositorio.eliminar(id);

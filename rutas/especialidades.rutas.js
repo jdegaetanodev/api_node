@@ -3,7 +3,7 @@ import { validar } from '../middlewares/validar.middleware.js';
 import { validarId, validarCrear, validarActualizar } from '../dtos/especialidades.dto.js';
 import TransformarDTO from '../middlewares/transformarDTOs.js';
 import * as especialidadesControlador from '../controladores/especialidades.controlador.js';
-import { verificarToken, esAdmin } from '../middlewares/auth.middleware.js';
+import { verificarToken, esAdmin, esPacienteOAdmin } from '../middlewares/auth.middleware.js';
 
 const enrutador = Router();
 const transformar = new TransformarDTO();
@@ -29,7 +29,7 @@ const transformar = new TransformarDTO();
  *       500:
  *         description: Error interno del servidor
  */
-enrutador.get('/',       verificarToken, especialidadesControlador.obtenerTodos);
+enrutador.get('/', verificarToken, esPacienteOAdmin, especialidadesControlador.obtenerTodos);
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ enrutador.get('/',       verificarToken, especialidadesControlador.obtenerTodos)
  *       422:
  *         description: ID inválido
  */
-enrutador.get('/:id',    verificarToken, validarId, validar, especialidadesControlador.obtenerUno);
+enrutador.get('/:id', verificarToken, esPacienteOAdmin, validarId, validar, especialidadesControlador.obtenerUno);
 
 /**
  * @swagger
@@ -84,7 +84,7 @@ enrutador.get('/:id',    verificarToken, validarId, validar, especialidadesContr
  *       422:
  *         description: Error de validación
  */
-enrutador.post('/',      verificarToken, esAdmin, validarCrear, validar, transformar.especialidadesCrearDTO, especialidadesControlador.crear);
+enrutador.post('/', verificarToken, esAdmin, validarCrear, validar, transformar.especialidadesCrearDTO, especialidadesControlador.crear);
 
 /**
  * @swagger
@@ -121,7 +121,7 @@ enrutador.post('/',      verificarToken, esAdmin, validarCrear, validar, transfo
  *       422:
  *         description: Error de validación
  */
-enrutador.put('/:id',    verificarToken, esAdmin, validarActualizar, validar, transformar.especialidadesActualizarDTO, especialidadesControlador.actualizar);
+enrutador.put('/:id', verificarToken, esAdmin, validarActualizar, validar, transformar.especialidadesActualizarDTO, especialidadesControlador.actualizar);
 
 /**
  * @swagger
